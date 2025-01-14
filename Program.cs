@@ -7,7 +7,7 @@ class Graph
     private readonly int _numNodes;
     private readonly List<(int neighbor, double weight)>[] _adjacencyList;
 
-    // Constructor to initialize the graph
+    // Constructor to initialise the graph
     public Graph(int numNodes)
     {
         _numNodes = numNodes;
@@ -72,26 +72,29 @@ class Graph
     // BFS to calculate shortest path distances for unweighted graph
     private int[] BFS(int startNode)
     {
-        int[] distances = new int[_numNodes];
+        int[] distances = new int[_numNodes];                                   // Array to store distances from the start node to all other nodes
+
         for (int i = 0; i < _numNodes; i++)
         {
-            distances[i] = int.MaxValue; // Initialize distances to "infinity"
+            distances[i] = int.MaxValue;                                        // Initialise distances to "infinity" to mark them as 'unvisited'
         }
-        distances[startNode] = 0;
 
-        Queue<int> queue = new Queue<int>();
-        queue.Enqueue(startNode);
+        distances[startNode] = 0;                                               // Distance from start node to itself is always 0
 
-        while (queue.Count > 0)
+        Queue<int> queue = new Queue<int>();                                    // Queue to manage nodes to visit during teh BFS traversal
+
+        queue.Enqueue(startNode);                                               // Begin with start node
+
+        while (queue.Count > 0)                                                 // Perform BFS traversal
         {
-            int current = queue.Dequeue();
+            int current = queue.Dequeue();                                          // Get next node from the queue
 
-            foreach (var (neighbor, _) in _adjacencyList[current])
+            foreach (var (neighbour, _) in _adjacencyList[current])                 // Loop through all neighbours of the current node
             {
-                if (distances[neighbor] == int.MaxValue)
+                if (distances[neighbour] == int.MaxValue)                           // If current neighbour is unvisited
                 {
-                    distances[neighbor] = distances[current] + 1;
-                    queue.Enqueue(neighbor);
+                    distances[neighbour] = distances[current] + 1;                      // Update the distance to the neighbour as one more than the current node's distance
+                    queue.Enqueue(neighbour);                                           // Add the neighbour to the queue for further exploration
                 }
             }
         }
@@ -102,27 +105,29 @@ class Graph
     // Dijkstra's algorithm to calculate shortest path distances for weighted graph
     private double[] Dijkstra(int startNode)
     {
-        double[] distances = new double[_numNodes];
+        double[] distances = new double[_numNodes];                                                 // Array to store distances from the start node to all other nodes
         for (int i = 0; i < _numNodes; i++)
         {
-            distances[i] = double.MaxValue; // Initialize distances to "infinity"
+            distances[i] = double.MaxValue;                                                         // Initialise distances to "infinity" to mark them as 'unvisited'
         }
-        distances[startNode] = 0;
+        distances[startNode] = 0;                                                                   // Distance from start node to itself is always 0
 
-        PriorityQueue<int, double> priorityQueue = new PriorityQueue<int, double>();
-        priorityQueue.Enqueue(startNode, 0);
+        PriorityQueue<int, double> priorityQueue = new PriorityQueue<int, double>();                // Priority queue to select the next node with the smallest distance
 
-        while (priorityQueue.Count > 0)
+        priorityQueue.Enqueue(startNode, 0);                                                        // Distance from start node to itself is always 0
+
+        while (priorityQueue.Count > 0)                                                             // Process nodes until the priority queue is empty
         {
-            int current = priorityQueue.Dequeue();
+            int current = priorityQueue.Dequeue();                                                      // Dequeue the node with the smallest distance
 
-            foreach (var (neighbor, weight) in _adjacencyList[current])
+            foreach (var (neighbour, weight) in _adjacencyList[current])                                // Explore all neighbours of the current node
             {
-                double newDistance = distances[current] + weight;
-                if (newDistance < distances[neighbor])
+                double newDistance = distances[current] + weight;                                       // Calculate the distance to the neighbour
+
+                if (newDistance < distances[neighbour])                                                 // If the new distance is shorter than the current known distance
                 {
-                    distances[neighbor] = newDistance;
-                    priorityQueue.Enqueue(neighbor, newDistance);
+                    distances[neighbour] = newDistance;                                                     // Update the distance to the neighbour
+                    priorityQueue.Enqueue(neighbour, newDistance);                                          // Enqueue the neighbor with the updated distance
                 }
             }
         }
